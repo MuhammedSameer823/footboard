@@ -1,0 +1,72 @@
+# Dice cube OBJ file
+
+mtllib dice.mtl
+usemtl diceMaterial
+
+# vertices (corners of cube)
+v -0.5 -0.5  0.5
+v  0.5 -0.5  0.5
+v  0.5  0.5  0.5
+v -0.5  0.5  0.5
+v -0.5 -0.5 -0.5
+v  0.5 -0.5 -0.5
+v  0.5  0.5 -0.5
+v -0.5  0.5 -0.5
+
+# texture coords (UVs) mapped to the texture atlas layout
+
+# dice1 (face 1) top-left corner (0.0,0.5) to (0.3333,1.0)
+vt 0.0    1.0
+vt 0.3333 1.0
+vt 0.3333 0.5
+vt 0.0    0.5
+
+# dice2 (face 2) top middle (0.3333,0.5) to (0.6666,1.0)
+vt 0.3333 1.0
+vt 0.6666 1.0
+vt 0.6666 0.5
+vt 0.3333 0.5
+
+# dice3 (face 3) top right (0.6666,0.5) to (1.0,1.0)
+vt 0.6666 1.0
+vt 1.0    1.0
+vt 1.0    0.5
+vt 0.6666 0.5
+
+# dice4 (face 4) bottom left (0.0,0.0) to (0.3333,0.5)
+vt 0.0    0.5
+vt 0.3333 0.5
+vt 0.3333 0.0
+vt 0.0    0.0
+
+# dice5 (face 5) bottom middle (0.3333,0.0) to (0.6666,0.5)
+vt 0.3333 0.5
+vt 0.6666 0.5
+vt 0.6666 0.0
+vt 0.3333 0.0
+
+# dice6 (face 6) bottom right (0.6666,0.0) to (1.0,0.5)
+vt 0.6666 0.5
+vt 1.0    0.5
+vt 1.0    0.0
+vt 0.6666 0.0
+
+# faces with vertex/texture coord indices (using the above UVs)
+
+# front face (dice1)
+f 1/1 2/2 3/3 4/4
+
+# right face (dice2)
+f 2/5 6/6 7/7 3/8
+
+# back face (dice6)
+f 6/21 5/22 8/23 7/24
+
+# left face (dice5)
+f 5/17 1/18 4/19 8/20
+
+# top face (dice3)
+f 4/9 3/10 7/11 8/12
+
+# bottom face (dice4)
+f 5/13 6/14 2/15 1/16
