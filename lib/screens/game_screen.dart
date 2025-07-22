@@ -1,15 +1,14 @@
 // lib/screens/game_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:football_ludo/interface/pallate.dart';
-import 'dart:math';
+import 'package:footboard/interface/pallate.dart';
+
 import '../models/player.dart';
 import '../widgets/board_tile.dart';
-import '../widgets/dice_widget.dart';
 import '../widgets/dice_3d.dart';
 import '../models/teams.dart';
 import 'winner_screen.dart';
-import 'package:football_ludo/widgets/constants.dart';
+import 'package:footboard/widgets/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class GameScreen extends StatefulWidget {
@@ -65,7 +64,7 @@ class _GameScreenState extends State<GameScreen> {
   void rollDice() {
     setState(() {
       currentPlayer.work = "PLAY ONNN";
-      diceRoll = Random().nextInt(6) + 1;
+
       int newPos = currentPlayer.position;
 
       if (extraPlayer == currentPlayer) {
@@ -345,11 +344,6 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: const Text("LUDO FOOTBALL GAME"),
-        centerTitle: true,
-      ),
       body: Stack(
         children: [
           // 🖼 Background image

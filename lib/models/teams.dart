@@ -12,20 +12,22 @@ class Team {
     required this.shortName,
     required this.color,
   });
-}
 
-final List<Team> allTeams = [
-  Team(
-    name: 'Manchester United',
-    logo: 'assets/utd.png',
-    shortName: 'MUN',
-    color: Colors.red,
-  ),
-  Team(
-    name: 'Chelsea',
-    logo: 'assets/che.png',
-    shortName: 'CHE',
-    color: Colors.blue,
-  ),
-  // Add more teams...
-];
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'logo': logo,
+      'color': color.value, // ✅ Store as int
+      'shortName': shortName,
+    };
+  }
+
+  factory Team.fromMap(Map<String, dynamic> map) {
+    return Team(
+      name: map['name'] ?? '',
+      logo: map['logo'] ?? '',
+      color: Color(map['color'] ?? 0xFFFFFFFF), // ✅ Restore from int
+      shortName: map['shortName'] ?? '',
+    );
+  }
+}

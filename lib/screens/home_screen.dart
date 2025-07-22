@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:football_ludo/interface/pallate.dart';
+import 'package:footboard/interface/pallate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/auth_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -180,7 +181,17 @@ class HomeScreen extends StatelessWidget {
                                 elevation: 0,
                               ),
                               onPressed: () {
-                                // TODO: Navigate to player profile
+                                final user = AuthService.currentUser;
+                                if (user == null) {
+                                  Navigator.pushNamed(context, '/login');
+                                } else {
+                                  // Show profile page or toast for now
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text('Logged in as: ${user.uid}')),
+                                  );
+                                }
                               },
                               child: const Icon(
                                 Icons.person_outline,

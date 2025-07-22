@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:football_ludo/interface/pallate.dart';
+import 'package:footboard/interface/pallate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/teams.dart';
 import '../widgets/constants.dart';
@@ -60,17 +60,19 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen>
   late String mode;
   // Track whether we are selecting HOME or AWAY team
   bool selectingHomeTeam = true;
-
+  bool isOnline = false;
   // Animation controller and slide animation for transition between home/away
 
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     mode = args['mode'];
+    isOnline = args['isOnline'] ?? false; // default to false
   }
 
   @override
@@ -127,23 +129,36 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen>
   }
 
   void _onChoosePressed() async {
-    if (selectingHomeTeam) {
-      await _controller.forward(); // Slide out + in
-      setState(() {
-        selectingHomeTeam = false;
-      });
-      _controller.reset(); // Reset so it can animate again if needed
-    } else {
-      // Navigate to game screen with selected teams
+    if (isOnline) {
       Navigator.pushNamed(
         context,
-        '/game',
+        '/connect',
         arguments: {
-          'homeTeam': allTeams[homeTeamIndex],
-          'awayTeam': allTeams[awayTeamIndex],
-          'mode': mode
+          'selectedTeam': allTeams[homeTeamIndex],
+          'mode': mode,
+          'isOnline': true,
         },
       );
+    } else {
+      if (selectingHomeTeam) {
+        await _controller.forward();
+        setState(() {
+          selectingHomeTeam = false;
+        });
+        _controller.reset();
+      } else {
+        Navigator.pushNamed(
+          context,
+          '/game',
+          arguments: {
+            'homeTeam': allTeams[homeTeamIndex],
+            'awayTeam': allTeams[awayTeamIndex],
+            'mode': mode,
+            'hostId': '',
+            'guestId': '',
+          },
+        );
+      }
     }
   }
 
@@ -217,7 +232,11 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen>
                               borderRadius: BorderRadius.circular(24),
                             ),
                             child: Text(
-                              selectingHomeTeam ? 'HOME TEAM' : 'AWAY TEAM',
+                              isOnline
+                                  ? 'CHOOSE YOUR TEAM'
+                                  : (selectingHomeTeam
+                                      ? 'HOME TEAM'
+                                      : 'AWAY TEAM'),
                               style: GoogleFonts.nunito(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -268,42 +287,44 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen>
                             ),
                           ),
                           const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(2, (index) {
-                              bool isSelected =
-                                  (selectingHomeTeam && index == 0) ||
-                                      (!selectingHomeTeam && index == 1);
+                          if (!isOnline)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(2, (index) {
+                                bool isSelected =
+                                    (selectingHomeTeam && index == 0) ||
+                                        (!selectingHomeTeam && index == 1);
 
-                              return GestureDetector(
-                                onTap: () {
-                                  bool shouldSwitch =
-                                      (index == 0 && !selectingHomeTeam) ||
-                                          (index == 1 && selectingHomeTeam);
-                                  if (shouldSwitch) {
-                                    _controller.forward().then((_) {
-                                      setState(() {
-                                        selectingHomeTeam = !selectingHomeTeam;
+                                return GestureDetector(
+                                  onTap: () {
+                                    bool shouldSwitch =
+                                        (index == 0 && !selectingHomeTeam) ||
+                                            (index == 1 && selectingHomeTeam);
+                                    if (shouldSwitch) {
+                                      _controller.forward().then((_) {
+                                        setState(() {
+                                          selectingHomeTeam =
+                                              !selectingHomeTeam;
+                                        });
+                                        _controller.forward();
                                       });
-                                      _controller.forward();
-                                    });
-                                  }
-                                },
-                                child: AnimatedContainer(
-                                  duration: Duration(milliseconds: 300),
-                                  margin: EdgeInsets.symmetric(horizontal: 6),
-                                  width: isSelected ? 24 : 10,
-                                  height: 10,
-                                  decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? Pallate.lightcream
-                                        : Pallate.lightcream.withAlpha(64),
-                                    borderRadius: BorderRadius.circular(6),
+                                    }
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: Duration(milliseconds: 300),
+                                    margin: EdgeInsets.symmetric(horizontal: 6),
+                                    width: isSelected ? 24 : 10,
+                                    height: 10,
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? Pallate.lightcream
+                                          : Pallate.lightcream.withAlpha(64),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
                                   ),
-                                ),
-                              );
-                            }),
-                          ),
+                                );
+                              }),
+                            ),
 
                           const SizedBox(height: 20),
 
@@ -360,7 +381,7 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen>
                                   right: 24,
                                   bottom: 72,
                                   child: Image.asset(
-                                    selectingHomeTeam
+                                    selectingHomeTeam || isOnline
                                         ? allTeams[homeTeamIndex].logo
                                         : allTeams[awayTeamIndex].logo,
                                     fit: BoxFit.contain,
@@ -371,7 +392,7 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen>
                                   left: 0,
                                   right: 0,
                                   child: Text(
-                                    selectingHomeTeam
+                                    selectingHomeTeam || isOnline
                                         ? allTeams[homeTeamIndex]
                                             .name
                                             .toUpperCase()

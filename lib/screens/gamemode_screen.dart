@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:football_ludo/interface/pallate.dart';
+import 'package:footboard/interface/pallate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/constants.dart';
 
@@ -68,17 +68,16 @@ class _GameModeScreenState extends State<GameModeScreen> {
               children: [
                 buildModeButton(
                   "AI",
-                  "select",
                   Icons.computer_outlined,
                 ),
                 const SizedBox(
                   height: 25,
                 ),
-                buildModeButton("local", "select", Icons.people),
+                buildModeButton("local", Icons.people),
                 const SizedBox(
                   height: 25,
                 ),
-                buildModeButton(" online", "", Icons.wifi),
+                buildModeButton("online", Icons.wifi),
                 const SizedBox(
                   height: 25,
                 ),
@@ -92,15 +91,18 @@ class _GameModeScreenState extends State<GameModeScreen> {
 
   Widget buildModeButton(
     String title,
-    String move,
     IconData icon,
   ) {
     return GestureDetector(
       onTap: () {
         print("Selected mode: $title");
-        Navigator.pushNamed(context, '/$move', arguments: {
-          'mode': title
-        }); // Navigate or set state based on selected mode
+
+        final isOnlineMode = title.toLowerCase() == "online";
+        print("what------: $isOnlineMode");
+        Navigator.pushNamed(context, '/select', arguments: {
+          'mode': title,
+          'isOnline': isOnlineMode,
+        });
       },
       child: Container(
         width: 280,
