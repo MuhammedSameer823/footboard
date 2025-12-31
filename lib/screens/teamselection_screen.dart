@@ -28,7 +28,7 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen>
       color: Colors.red,
     ),
     Team(
-      name: 'arsnal',
+      name: 'arsenal',
       logo: 'assets/ars.png',
       shortName: 'ARS',
       color: Colors.red,
